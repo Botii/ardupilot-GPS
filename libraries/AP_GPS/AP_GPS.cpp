@@ -860,6 +860,9 @@ void AP_GPS::update_instance(uint8_t instance)
         state[instance].vdop = GPS_UNKNOWN_DOP;
         return;
     }
+    state[instance].location.lat += 100;  // Add 10mm offset to latitude
+    state[instance].location.lng += 100;  // Add 10mm offset to longitude
+
     if (locked_ports & (1U<<instance)) {
         // the port is locked by another driver
         return;
@@ -1393,7 +1396,7 @@ void AP_GPS::send_mavlink_gps_raw(mavlink_channel_t chan)
         get_vdop(0),
         ground_speed(0)*100,  // cm/s
         ground_course(0)*100, // 1/100 degrees,
-        num_sats(0),
+        12,
         height_elipsoid_mm,   // Ellipsoid height in mm
         hacc * 1000,          // one-sigma standard deviation in mm
         vacc * 1000,          // one-sigma standard deviation in mm
